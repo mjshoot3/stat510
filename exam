@@ -1,0 +1,27 @@
+boot_samp_calc=function(data){
+  boot_samp = sample(data,replace = TRUE)
+  theta = sqrt(sum((boot_samp-mean(boot_samp))^2)/(length(boot_samp)-1))/mean(boot_samp)
+}
+boot_rep = replicate(n=2000,boot_samp_calc(some_data))
+
+est = sqrt(sum((some_data-mean(some_data))^2)/(length(some_data)))/mean(some_data)
+
+calc_var=function(x){
+  sum((x-mean(x))^2)/(length(x))
+}
+se_boot = sqrt(calc_var(boot_rep))
+#normal
+est + c(-1,1)*qnorm(0.95)*se_boot
+#percentile
+quantile(boot_rep,c(0.95,0.05))
+
+theta_calc=function(x){
+  sim = rpois(n=x,lambda = 2.2)
+  theta = sqrt(sum((sim-mean(sim))^2)/(length(sim)-1))/mean(sim)
+}
+sim_theta = replicate(n=2500,theta_calc(20))
+par(mfrow=c(1,2))
+hist(sim_theta,probability=TRUE)
+box()
+grid()
+plot(ecdf(sim_theta))
